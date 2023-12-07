@@ -32,6 +32,6 @@ int main(int argc, char *argv[]){
         }
     }
 
-    MPI_Finalize();
+    if(f==0) MPI_Finalize();
     return 0;
 }

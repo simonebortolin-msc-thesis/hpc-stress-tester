@@ -20,6 +20,8 @@ int main(int argc, char *argv[]){
 
     int opt;
 
+    int f = fork();
+
     while ((opt = getopt(argc, argv, "cep")) != -1) {
         switch (opt) {
             case 'c': countdown(argc,argv); break;

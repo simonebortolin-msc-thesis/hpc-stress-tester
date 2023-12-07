@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <mpi.h>
+#include <cstdio>
 
 #include "countdown.h"
 #include "eratostene.h"

@@ -4,6 +4,7 @@
 
 #include "countdown.h"
 #include "eratostene.h"
+#include "matrix.h"
 #include "pi.h"
 
 int main(int argc, char *argv[]){
@@ -20,18 +21,19 @@ int main(int argc, char *argv[]){
 
     int opt;
 
-    int f = fork();
+    //int f = fork();
 
-    while ((opt = getopt(argc, argv, "cep")) != -1) {
+    while ((opt = getopt(argc, argv, "cepm")) != -1) {
         switch (opt) {
             case 'c': countdown(argc,argv); break;
             case 'e': eratostene(argc, argv); break;
             case 'p': pi(argc, argv); break;
+            case 'm': matrix(argc, argv); break;
             default:
-                fprintf(stderr, "Usage: %s [-cep] [option...]\n", argv[0]);
+                fprintf(stderr, "Usage: %s [-cepm] [option...]\n", argv[0]);
         }
     }
 
-    if(f!=0) MPI_Finalize();
+    //if(f!=0) MPI_Finalize();
     return 0;
 }

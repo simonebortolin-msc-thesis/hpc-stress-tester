@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -pedantic -lm -O3 -funroll-loops")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 
-add_executable(mpi_stress_tester main.cpp countdown.cpp eratostene.cpp pi.cpp)
+add_executable(mpi_stress_tester main.cpp countdown.cpp eratostene.cpp pi.cpp matrix.cpp matrix.cpp
+        matrix.cpp)
 
 # OpenMP
 find_package(OpenMP)

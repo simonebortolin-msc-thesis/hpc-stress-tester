@@ -13,23 +13,23 @@ void pi(int argc, char *argv[]) {
     }
 
     char *endptr;
-    time_t duration = strtol(argv[2], &endptr, 10);
+    const time_t duration = strtol(argv[2], &endptr, 10);
 
     if (*endptr != '\0') {
         fprintf(stderr, "Invalid duration: %s\n", argv[2]);
         return;
     }
 
-    int size = strtol(argv[3], &endptr, 10);
+    const long size = strtol(argv[3], &endptr, 10);
 
     if (*endptr != '\0') {
         fprintf(stderr, "Invalid terms: %s\n", argv[3]);
         return;
     }
 
-    time_t start_time = time(NULL);
+    const time_t start_time = time(nullptr);
 
-    while (time(NULL) - start_time <= duration) {
+    while (time(nullptr) - start_time <= duration) {
         double pi = 0.0;
         int sign = 1;
 

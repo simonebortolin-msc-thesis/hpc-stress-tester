@@ -8,7 +8,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <functional>
-#include <limits>
 #include <numeric>
 #include <vector>
 
@@ -18,7 +17,6 @@
 
 template <typename T>
 class hpc_matrix {
-private:
     int rows;
     int cols;
     T* data;
@@ -26,12 +24,12 @@ private:
 public:
     hpc_matrix() : rows(0), cols(0), data(nullptr) {}
 
-    hpc_matrix(int rows, int cols, std::function<T(int, int)> init) : rows(rows), cols(cols) {
+    hpc_matrix(const int rows, const int cols, std::function<T(int, int)> init) : rows(rows), cols(cols) {
         data = new T[rows * cols];
         initialize(init);
     }
 
-    hpc_matrix(int rows, int cols) : rows(rows), cols(cols) {
+    hpc_matrix(const int rows, const int cols) : rows(rows), cols(cols) {
         data = new T[rows * cols];
     }
 
@@ -65,11 +63,11 @@ public:
         other.data = nullptr;
     }
 
-    T operator()(int i, int j) const  {
+    T operator()(const int i, const int j) const  {
         return data[i * cols + j];
     }
 
-    T& operator()(int i, int j) {
+    T& operator()(const int i, const int j) {
         return data[i * cols + j];
     }
 
@@ -240,7 +238,7 @@ public:
         return result;
     }
 
-    hpc_matrix power(int other) const {
+    hpc_matrix power(const int other) const {
         if (rows != cols) {
             fprintf(stderr, "Error: Matrices must be squared for the power.\n");
 
@@ -362,7 +360,7 @@ public:
 
     }
 
-    int luDecomposition() {
+    int luDecomposition() const {
         hpc_matrix lower, upper, pivot;
         return luDecomposition(lower,upper,pivot);
     }
@@ -396,15 +394,9 @@ public:
                 }
             }
 
-            /*if(maxValue <= std::numeric_limits<T>::epsilon()) {
-                fprintf(stderr, "Error: Matrix is singular.\n");
-
-                exit(EXIT_FAILURE);
-            }*/
-
             // Swap row
             if(maxRow != j) {
-                int temp = perm[j];
+                const int temp = perm[j];
                 perm[j] = perm[maxRow];
                 perm[maxRow] = temp;
                 ++swapCount;
@@ -439,9 +431,9 @@ public:
         return swapCount;
     }
 
-    int to_string(char * string, const int n) {
+    int to_string(char * string, const int n) const {
         int k = 0;
-        for(int i = 0; i< rows && k < n; ++i) {
+        for(int i = 0; i < rows && k < n; ++i) {
             for(int j = 0; j< cols && k < n; ++j) {
                 k += sprintf(string + k,"%f ",(*this)(i,j));
             }
@@ -450,8 +442,8 @@ public:
         return k;
     }
 
-    static hpc_matrix identity(int other) {
-        return hpc_matrix(other, other, [](int i, int j){return T() + (i==j);});
+    static hpc_matrix identity(const int other) {
+        return hpc_matrix(other, other, [](const int i, const int j){return T() + (i == j);});
     }
 };
 

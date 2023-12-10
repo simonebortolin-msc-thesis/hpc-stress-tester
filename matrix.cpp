@@ -70,6 +70,10 @@ void matrix(int argc, char *argv[]) {
         result -= result;
         result *= 2;
 
+        for(int j = 0; j < 100 && dm3.determinant() == 0; j++) {
+            dm3.initialize([row](int, int) { return (rand() % row)*1.0; });
+        }
+
         hpc_matrix<double> inverse = dm3.inverse();
         //char * buffer = new char[row * row * col * col];
         //inverse.to_string(buffer, row * row * col * col);

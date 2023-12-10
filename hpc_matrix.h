@@ -17,27 +17,27 @@
 
 template <typename T>
 class hpc_matrix {
-    int rows;
-    int cols;
+    size_t rows;
+    size_t cols;
     T* data;
 
 public:
     hpc_matrix() : rows(0), cols(0), data(nullptr) {}
 
-    hpc_matrix(const int rows, const int cols, std::function<T(int, int)> init) : rows(rows), cols(cols) {
+    hpc_matrix(const size_t rows, const size_t cols, std::function<T(size_t, size_t)> init) : rows(rows), cols(cols) {
         data = new T[rows * cols];
         initialize(init);
     }
 
-    hpc_matrix(const int rows, const int cols) : rows(rows), cols(cols) {
+    hpc_matrix(const size_t rows, const size_t cols) : rows(rows), cols(cols) {
         data = new T[rows * cols];
     }
 
-    int getRows() const {
+    size_t getRows() const {
         return rows;
     }
 
-    int getCols() const {
+    size_t getCols() const {
         return cols;
     }
 
@@ -52,7 +52,7 @@ public:
     hpc_matrix(const hpc_matrix& other) : rows(other.rows), cols(other.cols) {
         data = new T[rows * cols];
 
-        for (int i = 0; i < rows * cols; ++i) {
+        for (size_t i = 0; i < rows * cols; ++i) {
             data[i] = other.data[i];
         }
     }
@@ -63,17 +63,17 @@ public:
         other.data = nullptr;
     }
 
-    T operator()(const int i, const int j) const  {
+    T operator()(const size_t i, const size_t j) const  {
         return data[i * cols + j];
     }
 
-    T& operator()(const int i, const int j) {
+    T& operator()(const size_t i, const size_t j) {
         return data[i * cols + j];
     }
 
-    void initialize(std::function<T(int, int)> init) {
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+    void initialize(std::function<T(size_t, size_t)> init) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 (*this)(i, j) = init(i,j);
             }
         }
@@ -88,7 +88,7 @@ public:
 
             data = new T[rows * cols];
 
-            for (int i = 0; i < rows * cols; ++i) {
+            for (size_t i = 0; i < rows * cols; ++i) {
                 data[i] = other.data[i];
             }
         }
@@ -119,8 +119,8 @@ public:
 
         hpc_matrix result(rows, cols);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 result(i, j) = (*this)(i, j) + other(i, j);
             }
         }
@@ -135,8 +135,8 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 (*this)(i, j) += other(i,j);
             }
         }
@@ -153,8 +153,8 @@ public:
 
         hpc_matrix result(rows, cols);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 result(i, j) = (*this)(i, j) - other(i, j);
             }
         }
@@ -169,8 +169,8 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 (*this)(i, j) -= other(i,j);
             }
         }
@@ -181,8 +181,8 @@ public:
     hpc_matrix operator*(T other) const {
         hpc_matrix<T> result(rows, cols);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 result(i, j) = (*this)(i, j) * other;
             }
         }
@@ -191,8 +191,8 @@ public:
     }
 
     hpc_matrix &operator*=(T other) {
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 (*this)(i, j) *= other;
             }
         }
@@ -209,10 +209,10 @@ public:
 
         hpc_matrix<T> result(rows, other.cols);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < other.cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < other.cols; ++j) {
                 result(i, j) = 0;
-                for (int k = 0; k < cols; ++k) {
+                for (size_t k = 0; k < cols; ++k) {
                     result(i, j) += (*this)(i, k) * other(k, j);
                 }
             }
@@ -227,10 +227,10 @@ public:
     }
 
     hpc_matrix transpose() const {
-        hpc_matrix<T> result(cols, rows);
+        hpc_matrix result(cols, rows);
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 result(j, i) = (*this)(i, j);
             }
         }
@@ -238,7 +238,7 @@ public:
         return result;
     }
 
-    hpc_matrix power(const int other) const {
+    hpc_matrix power(const int factor) const {
         if (rows != cols) {
             fprintf(stderr, "Error: Matrices must be squared for the power.\n");
 
@@ -246,7 +246,7 @@ public:
         }
         hpc_matrix result = hpc_matrix::identity(rows);
 
-        for (int i = 0; i < other; ++i) {
+        for (int i = 0; i < factor; ++i) {
             result *= (*this);
         }
 
@@ -286,21 +286,22 @@ public:
         hpc_matrix identity = hpc_matrix::identity(rows);
         luDecomposition(lower,upper,pivot);
 
-        for(int j = 0; j < cols; ++j) {
+        for(size_t j = 0; j < cols; ++j) {
             // Ly = I
             hpc_matrix y(rows, 1);
-            for (int i = 0; i < rows; ++i) {
+            for (size_t i = 0; i < rows; ++i) {
                 T sum = 0;
-                for (int k = 0; k < i; ++k) {
+                for (size_t k = 0; k < i; ++k) {
                     sum += lower(i, k) * y(k, 0);
                 }
                 y(i, 0) = (identity(i, j) - sum) / lower(i, i);
             }
 
             // Ux = y
-            for (int i = rows - 1; i >= 0; --i) {
+            // since size_t is only positive the condition i >= 0 is always true, this is a excamotage
+            for (size_t i = rows - 1; i < rows; --i) {
                 T sum = 0;
-                for (int k = i + 1; k < rows; ++k) {
+                for (size_t k = i + 1; k < rows; ++k) {
                     sum += upper(i, k) * inverse(k, j);
                 }
                 inverse(i, j) = (y(i, 0) - sum) / upper(i, i);
@@ -311,8 +312,8 @@ public:
     }
 
     bool is_idenity() const {
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
                 if (i == j && (*this)(i, j) != 1) {
                     return false;
                 }
@@ -349,10 +350,10 @@ public:
         }
 
         hpc_matrix lu(*this);
-        const int swapCount = lu.luDecomposition();
+        const size_t swapCount = lu.luDecomposition();
 
         T det = 1;
-        for (int i = 0; i < rows; ++i) {
+        for (size_t i = 0; i < rows; ++i) {
             det *= lu(i, i);
         }
 
@@ -360,11 +361,11 @@ public:
 
     }
 
-    int luDecomposition() const {
+    size_t luDecomposition() const {
         hpc_matrix lower, upper, pivot;
         return luDecomposition(lower,upper,pivot);
     }
-    int luDecomposition(hpc_matrix& lower, hpc_matrix& upper, hpc_matrix& pivot) const {
+    size_t luDecomposition(hpc_matrix& lower, hpc_matrix& upper, hpc_matrix& pivot) const {
         if (rows != cols) {
             fprintf(stderr, "Error: Matrices must be squared for the power.\n");
 
@@ -376,17 +377,17 @@ public:
         upper = hpc_matrix(rows, cols, [](int, int) {  return T(); });
         pivot = hpc_matrix(rows, cols, [](int, int) {  return T(); });
 
-        std::vector<int> perm(rows);
+        std::vector<size_t> perm(rows);
         std::iota(perm.begin(), perm.end(), 0);
 
-        int swapCount = 0;
+        size_t swapCount = 0;
 
-        for (int j = 0; j < rows - 1; ++j) {
-            int maxRow = j;
+        for (size_t j = 0; j < rows - 1; ++j) {
+            size_t maxRow = j;
             T maxValue = abs(lu(j, j));
 
             // Find the row with the maximum value in the current column
-            for (int i = j + 1; i < rows; ++i) {
+            for (size_t i = j + 1; i < rows; ++i) {
                 T absValue = abs(lu(perm[i], j));
                 if (absValue > maxValue) {
                     maxRow = i;
@@ -396,35 +397,35 @@ public:
 
             // Swap row
             if(maxRow != j) {
-                const int temp = perm[j];
+                const size_t temp = perm[j];
                 perm[j] = perm[maxRow];
                 perm[maxRow] = temp;
                 ++swapCount;
             }
 
-            int jj = perm[j];
+            size_t jj = perm[j];
             // Apply Gaussian elimination to calculate U and L
-            for (int i = j + 1; i < rows; ++i) {
-                int ii = perm[i];
+            for (size_t i = j + 1; i < rows; ++i) {
+                size_t ii = perm[i];
                 lu(ii, j) /= lu(jj, j);
 
-                for (int k = j + 1; k < cols; ++k) {
+                for (size_t k = j + 1; k < cols; ++k) {
                     lu(ii, j) -= lu(ii, j) * lu(jj, k);
                 }
             }
         }
 
-        for (int j = 0; j < rows; ++j) {
+        for (size_t j = 0; j < rows; ++j) {
             lower(j, j) = 1;
-            for (int i = j + 1; i < cols; ++i) {
+            for (size_t i = j + 1; i < cols; ++i) {
                 lower(i, j) = lu(perm[i], j);
             }
-            for(int i = 0; i<=j;++i) {
+            for(size_t i = 0; i<=j;++i) {
                 upper(i, j) = lu(perm[i], j);
             }
         }
 
-        for(int i = 0; i< rows; ++i) {
+        for(size_t i = 0; i< rows; ++i) {
             pivot(i,perm[i]) = 1;
         }
 
@@ -433,8 +434,8 @@ public:
 
     int to_string(char * string, const int n) const {
         int k = 0;
-        for(int i = 0; i < rows && k < n; ++i) {
-            for(int j = 0; j< cols && k < n; ++j) {
+        for(size_t i = 0; i < rows && k < n; ++i) {
+            for(size_t j = 0; j< cols && k < n; ++j) {
                 k += sprintf(string + k,"%f ",(*this)(i,j));
             }
             k += sprintf(string + k, "\n");
@@ -442,8 +443,8 @@ public:
         return k;
     }
 
-    static hpc_matrix identity(const int other) {
-        return hpc_matrix(other, other, [](const int i, const int j){return T() + (i == j);});
+    static hpc_matrix identity(const size_t size) {
+        return hpc_matrix(size, size, [](const size_t i, const size_t j){return T() + (i == j);});
     }
 };
 
